@@ -1,6 +1,5 @@
-# Game On! Programming Template
+# 2D Top Down RPG in Unity
 
-This is a template project used in the UW Stout Summer STEAM Game On! camp for the programming class.  It is meant to accompany that course and will be elaborated on in person during the session.
+This is for my own implementation of the [Make an RPG](https://github.com/oneManDev-io/Make-an-RPG-Game-in-Unity-2022) tutorial by [One Man Dev](https://github.com/oneManDev-io).
 
-- Created Summer 2024
-- Inspired by the [Make an RPG](https://github.com/oneManDev-io/Make-an-RPG-Game-in-Unity-2022) tutorial by [One Man Dev](https://github.com/oneManDev-io)
+It will be updated to use the latest Unity version, the URP, and the modern Input System package as well as other changes to fit my own personal style.
