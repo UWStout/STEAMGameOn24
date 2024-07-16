@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(PlayerInput))]
 public class PlayerController : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class PlayerController : MonoBehaviour
     private Vector2 TargetVelocity;
 
     private Rigidbody2D rb;
+    private Animator anim;
 
     void Start()
     {
@@ -24,12 +26,35 @@ public class PlayerController : MonoBehaviour
         {
             Debug.LogError("Rigidbody2D component not found on Player.");
         }
+
+        if (!TryGetComponent<Animator>(out anim))
+        {
+            Debug.LogError("Animator component not found on Player.");
+        }
     }
 
     void FixedUpdate()
     {
+        UpdateMovement();
+    }
+
+    void UpdateMovement()
+    {
         // Move the player based on the target velocity
         rb.velocity = TargetVelocity * Time.fixedDeltaTime;
+
+        if (TargetVelocity == Vector2.zero)
+        {
+            // Don't clear the previous anim H and V values so we know what way we are facing
+            anim.SetBool("Walking", false);
+        }
+        else
+        {
+            // Update the animator parameters
+            anim.SetBool("Walking", true);
+            anim.SetFloat("Horizontal", TargetVelocity.x);
+            anim.SetFloat("Vertical", TargetVelocity.y);
+        }
     }
 
     // Called when the Move InputAction value changes
