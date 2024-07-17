@@ -1,5 +1,8 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Yarn.Unity;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Animator))]
@@ -12,6 +15,7 @@ public class PlayerController : MonoBehaviour
     private float MoveSpeed = 150f;
 
     private Vector2 TargetVelocity;
+    private Vector2 Facing;
 
     private bool DialogActive;
 
@@ -22,6 +26,8 @@ public class PlayerController : MonoBehaviour
     {
         // Initialize internal variable
         TargetVelocity = Vector2.zero;
+        Facing = Vector2.down;
+        DialogActive = false;
 
         // Initialize component references
         if (!TryGetComponent<Rigidbody2D>(out rb))
@@ -33,12 +39,15 @@ public class PlayerController : MonoBehaviour
         {
             Debug.LogError("Animator component not found on Player.");
         }
+
+        StartCoroutine(StartGame());
     }
 
     // This is called whenever Yarn Spinner starts dialog
     public void OnDialogStart ()
     {
         DialogActive = true;
+        Facing = TargetVelocity.normalized;
         TargetVelocity = Vector2.zero;
     }
 
@@ -73,6 +82,9 @@ public class PlayerController : MonoBehaviour
             anim.SetBool("Walking", true);
             anim.SetFloat("Horizontal", TargetVelocity.x);
             anim.SetFloat("Vertical", TargetVelocity.y);
+
+            // Remember what direction we are facing
+            Facing = TargetVelocity.normalized;
         }
     }
 
@@ -88,6 +100,57 @@ public class PlayerController : MonoBehaviour
     public void OnInteract(InputValue Action)
     {
         if (DialogActive) { return; }
-        Debug.Log("Interact!");
+
+        // Perform a raycast to check for interactable objects
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Facing, 1.0f, LayerMask.GetMask("Interactable"));
+        if (hit.collider != null)
+        {
+            // Get the Interactable component and call the Interact method
+            if(hit.collider.TryGetComponent<Interactable>(out var interactable)) {
+                interactable.Interact();
+            }
+        }
+    }
+
+    public IEnumerator StartGame()
+    {
+        GameObject CurtainObj = GameObject.FindWithTag("FadeCurtain");
+        if (CurtainObj != null)
+        {
+            Image Curtain = CurtainObj.GetComponent<Image>();
+            for (float i = 0; i <= 1; i += 0.01f)
+            {
+                Curtain.color = new Color(1, 1, 1, 1 - i);
+                yield return new WaitForFixedUpdate();
+            }
+        }
+
+        DialogueRunner Runner = FindObjectOfType<DialogueRunner>();
+        if (Runner != null)
+        {
+            Runner.StartDialogue("Start");
+        }
+    }
+
+    [YarnCommand("end_game")]
+    public IEnumerator EndGame()
+    {
+        GameObject CurtainObj = GameObject.FindWithTag("FadeCurtain");
+        if (CurtainObj != null)
+        {
+            Image Curtain = CurtainObj.GetComponent<Image>();
+            for (float i = 0; i <= 1; i += 0.01f)
+            {
+                Curtain.color = new Color(1, 1, 1, i);
+                yield return new WaitForFixedUpdate();
+            }
+        }
+        yield return new WaitForSeconds(1.0f);
+
+        #if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+        #else
+            Application.Quit();
+        #endif
     }
 }

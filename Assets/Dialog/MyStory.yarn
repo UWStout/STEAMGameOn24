@@ -1,6 +1,116 @@
 ﻿title: Start
 ---
-Hero: What a beautiful day! I'm so excited to start my adventure.
-Hero: Perhaps I should walk around and explore a bit.
-Hero: Or maybe there's someone I can talk to.
+<<declare $catName = "???">>
+<<declare $playerName = "Hero">>
+<<declare $CoinCount = 0>>
+<<declare $SwordCount = 0>>
+{$playerName}: What a beautiful day! I'm so excited to start my adventure.
+{$playerName}: Perhaps I should walk around and explore a bit.
+{$playerName}: Or maybe there's someone I can talk to.
+===
+
+title: Tree
+---
+<<if visited_count("Tree") > 3>>
+    {$playerName}: Seriously, I've checked this tree so many times.
+<<elseif visited_count("Tree") > 0>>
+    {$playerName}: Still no fruit on this tree. Maybe next time.
+<<else>>
+    {$playerName}: What a beautiful tree! I wonder how old it is.
+    {$playerName}: Maybe this will be the first year it bears fruit!
+    {$playerName}: ... or maybe it's not that kind of tree.
+<<endif>>
+===
+
+
+title: House
+---
+<<if $CoinCount >= 5 && $SwordCount > 0 && $catName != "???">>
+    <<jump GameEnd>>
+<<elseif visited("House")>>
+    {$playerName}: I get the feeling I haven't done everything yet. I should keep exploring.
+<<else>>
+    {$playerName}: I'm not going back in there yet, I just left!
+    {$playerName}: I should explore a bit more first.
+<<endif>>
+===
+
+title: Pond
+---
+{$playerName}: I love the sound of the water. It's so peaceful.
+{$playerName}: I wonder if there are any fish in there!
+<<if visited("Cat")>>
+    {$playerName}: I bet {$catName} likes fish. Is that why they're here?
+    {$catName}: *meow*
+<<endif>>
+===
+
+title: Cat
+---
+<<if visited("Cat")>>
+    {$playerName}: Still hanging in there, {$catName}?
+    {$catName}: *meow*
+<<else>>
+    {$playerName}: Oh, hello there, little cat! You're so cute.
+    {$catName}: *meow*
+    {$playerName}: I wonder if you're lost. Do you have a home?
+    {$catName}: *meow* *meow*
+    {$playerName}: I wish I could take you home with me, but I can't.
+    {$catName}: *purrrrrr*
+    {$playerName}: I suppose I could at least give you a name.  How about...
+    -> Garfield!
+        <<set $catName to "Garfield">>
+        {$playerName}: I don't have any lasagna, but I'm sure we can find you something to eat.
+    -> Whiskers!
+        <<set $catName to "Whiskers">>
+        {$playerName}: No copyright issues here.
+    -> Mittens!
+        <<set $catName to "Mittens">>
+        {$playerName}: Just like your wittle paws!
+    -> Fluffy!
+        <<set $catName to "Fluffy">>
+        {$playerName}: You're so soft and fluffy!
+
+    {$playerName}: Well, {$catName}, I hope you find your way home soon.
+    {$catName}: *meow* *meow*
+<<endif>>
+===
+
+title: Coin
+---
+<<if $CoinCount >= 7>>
+    {$playerName}: That has to be all of them! I should go back to the house.
+<<elseif $CoinCount > 3>>
+    {$playerName}: I'm getting quite the collection of coins.
+<<elseif visited("Coin")>>
+    {$playerName}: Another one! I'm on a roll.
+<<else>>
+    {$playerName}: Ooo, a shiny coin! Did someone drop this?
+    {$playerName}: I should pick it up, it might come in handy.
+<<endif>>
+===
+
+title: Sword
+---
+{$playerName}: How did this get all the way up here!? I should take it with me.
+{$playerName}: It looks pretty sharp so I better be careful, this isn't that kind of game.
+===
+
+title: WorldBorder
+---
+<<if visited("WorldBorder")>>
+    {$playerName}: No really I just can't! Do you want to break the game?
+<<else>>
+    {$playerName}: I can't go that way. I wonder what's out there?
+<<endif>>
+===
+
+title: GameEnd
+---
+{$playerName}: I did it! I found all the coins and got a sword!
+{$playerName}: And I made a new friend.
+{$catName}: *meow* *meow*
+{$playerName}: I'm sure you'll find your way home soon, {$catName}.
+{$playerName}: I should head back to the house now.
+<<end_game Player>>
 ===

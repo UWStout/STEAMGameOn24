@@ -168,4 +168,32 @@ public class Cat : MonoBehaviour
             animator.SetFloat("Vertical", Direction.y);
         }
     }
+
+    // Draw the patrol path
+    void OnDrawGizmosSelected()
+    {
+        for (int i = 0; i < PatrolSpots.Length; i++)
+        {
+            if (i == CurrentSpot)
+            {
+                Gizmos.color = Color.yellow;
+            }
+            else
+            {
+                Gizmos.color = Color.blue;
+            }
+
+            Gizmos.DrawCube(PatrolSpots[i].position, new Vector3(0.3f, 0.3f, 0.1f));
+
+            Gizmos.color = Color.red;
+            if (i < PatrolSpots.Length - 1)
+            {
+                Gizmos.DrawLine(PatrolSpots[i].position, PatrolSpots[i + 1].position);
+            }
+            else
+            {
+                Gizmos.DrawLine(PatrolSpots[i].position, PatrolSpots[0].position);
+            }
+        }
+    }
 }
