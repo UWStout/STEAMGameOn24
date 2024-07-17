@@ -109,7 +109,6 @@ public class Cat : MonoBehaviour
 
     IEnumerator WaitForPatrol(float WaitSeconds)
     {
-        Debug.Log($"Waiting for {WaitSeconds} seconds");
         // Change to waiting then wait
         State = CatState.Waiting;
         yield return new WaitForSeconds(WaitSeconds);
@@ -118,7 +117,6 @@ public class Cat : MonoBehaviour
         if (State == CatState.Waiting)
         {
             CurrentSpot = (CurrentSpot + 1) % PatrolSpots.Length;
-            Debug.Log($"Patrolling to spot {CurrentSpot}");
             State = CatState.Patrolling;
         }
     }
@@ -128,18 +126,10 @@ public class Cat : MonoBehaviour
         float Dist = Vector3.Distance(Target.position, transform.position);
         if (Dist <= StopRadius)
         {
-            if (State != CatState.Caught)
-            {
-                Debug.Log("Caught the player!");
-            }
             State = CatState.Caught;
         }
         else if(Dist <= DetectionRadius)
         {
-            if (State != CatState.Pursuing)
-            {
-                Debug.Log("Pursuing the player");
-            }
             State = CatState.Pursuing;
         }
         else if(State == CatState.Pursuing || State == CatState.Caught)
@@ -152,7 +142,6 @@ public class Cat : MonoBehaviour
     {
         Vector3 PatrolPos = PatrolSpots[CurrentSpot].position;
         float Dist = Vector3.Distance(PatrolPos, transform.position);
-        Debug.Log($"Distance to patrol spot: {Dist}");
         if (Dist > StopRadius)
         {
             TargetVelocity = (PatrolPos - transform.position).normalized;

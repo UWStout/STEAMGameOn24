@@ -13,6 +13,8 @@ public class PlayerController : MonoBehaviour
 
     private Vector2 TargetVelocity;
 
+    private bool DialogActive;
+
     private Rigidbody2D rb;
     private Animator anim;
 
@@ -33,9 +35,26 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    // This is called whenever Yarn Spinner starts dialog
+    public void OnDialogStart ()
+    {
+        DialogActive = true;
+        TargetVelocity = Vector2.zero;
+    }
+
+    // This is called whenever Yarn Spinner ends dialog
+    public void OnDialogEnd ()
+    {
+        DialogActive = false;
+    }
+
+    // This function runs at regular intervals
     void FixedUpdate()
     {
-        UpdateMovement();
+        if (!DialogActive)
+        {
+            UpdateMovement();
+        }
     }
 
     void UpdateMovement()
@@ -60,6 +79,7 @@ public class PlayerController : MonoBehaviour
     // Called when the Move InputAction value changes
     public void OnMove(InputValue Action)
     {
+        if (DialogActive) { return; }
         Vector2 MoveInput = Action.Get<Vector2>();
         TargetVelocity = MoveInput * MoveSpeed;
     }
@@ -67,6 +87,7 @@ public class PlayerController : MonoBehaviour
     // Called when the Interact button is pressed
     public void OnInteract(InputValue Action)
     {
+        if (DialogActive) { return; }
         Debug.Log("Interact!");
     }
 }
